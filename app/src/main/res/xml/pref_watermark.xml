@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="Color Of Watermark"
+        android:key="@string/color_pref_key"
+        android:entryValues="@array/color_option_label"
+        android:entries="@array/color_option_label"
+        android:defaultValue="@string/c1" />
+</PreferenceScreen>

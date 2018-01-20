@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="color_option_list">
+        <item>@color/colorPrimaryDark</item>
+        <item>@color/colorPrimary</item>
+        <item>@color/colorAccent</item>
+        <item>@color/colorOption1</item>
+        <item>@color/colorOption2</item>
+        <item>@color/colorOption3</item>
+        <item>@color/colorOption4</item>
+        <item>@color/colorOption5</item>
+        <item>@color/colorOption6</item>
+        <item>@color/colorOption7</item>
+    </array>
+    <array name="color_option_label">
+        <item>@string/c1</item>
+        <item>@string/c2</item>
+        <item>@string/c3</item>
+        <item>@string/c4</item>
+        <item>@string/c5</item>
+        <item>@string/c6</item>
+        <item>@string/c7</item>
+        <item>@string/c8</item>
+        <item>@string/c9</item>
+        <item>@string/c10</item>
+    </array>
+</resources>

@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">collegeSpace Application</string>
+    <string name="camera_button_text">Capture Image</string>
+    <string name="watermark_button_text">Add Watermark</string>
+    <string name="upload_button_text">Upload Image</string>
+    <string name="setting_menu_title">Settings</string>
+    <string name="content_description_of_ImageView">Captured Photograph</string>
+    <string name="color_pref_key">Color</string>
+    <string name="c1" translatable="false">Color 1</string>
+    <string name="c2" translatable="false">Color 2</string>
+    <string name="c3" translatable="false">Color 3</string>
+    <string name="c4" translatable="false">Color 4</string>
+    <string name="c5" translatable="false">Color 5</string>
+    <string name="c6" translatable="false">Color 6</string>
+    <string name="c7" translatable="false">Color 7</string>
+    <string name="c8" translatable="false">Color 8</string>
+    <string name="c9" translatable="false">Color 9</string>
+    <string name="c10" translatable="false">Color 10</string>
 </resources>
