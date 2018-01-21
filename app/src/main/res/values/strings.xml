@@ -16,4 +16,7 @@
     <string name="c8" translatable="false">Color 8</string>
     <string name="c9" translatable="false">Color 9</string>
     <string name="c10" translatable="false">Color 10</string>
+    <string name="edit_text_preference_title">Watermark Size</string>
+    <string name="default_value_of_size">15</string>
+    <string name="reset_image_button_text">RESET IMAGE</string>
 </resources>

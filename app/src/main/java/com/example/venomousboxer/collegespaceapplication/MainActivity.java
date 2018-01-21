@@ -23,11 +23,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     public static int REQUEST_IMAGE_CAPTURE = 1;
-    Button b;
+    Button captureImage;
     Button markingButton;
+    Button resetButton;
+    Button uploadButton;
     Intent i;
     ImageView image;
     String WATERMARK = "www.collegespace.com";
@@ -38,8 +40,11 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        b = findViewById(R.id.button);
-        b.setOnClickListener(new View.OnClickListener() {
+        captureImage = findViewById(R.id.capture_image_button);
+        markingButton = findViewById(R.id.watermarking_button);
+        uploadButton = findViewById(R.id.upload_image_button);
+        resetButton = findViewById(R.id.reset_image_button);
+        captureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -48,19 +53,28 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-        markingButton = findViewById(R.id.button2);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
                 getResources().getString(R.string.c1));
+        final int size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
+                getResources().getString(R.string.default_value_of_size)));
         markingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Point p = new Point(10,20);
-                k = mark(k , WATERMARK , p , setColorFromPreferences(value) , 23 , 20 , true);
+                k = mark(k , WATERMARK , p , setColorFromPreferences(value) , 23 , size , true);
                 image.setImageBitmap(k);
             }
         });
     }
+
+    /*
+    *  function to set color of watermark through value chosen in list preference
+    *
+    *  we don't need to implement @link OnSharedPreferenceChangeListener
+    *  because we are adding watermark when user presses the watermarking button
+    *
+    * */
 
     public int setColorFromPreferences(String value) {
         switch (value) {
@@ -89,10 +103,14 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    /*
+    * function that returns a new picture name to save the image in internal or external storage of phone
+    * */
+
     private String getPictureName() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String timeStamp = sdf.format(new Date());
-        return "plantPlacesImage"+timeStamp+".jpg";
+        return "Watermarked_Image"+timeStamp+".jpg";
     }
 
     @Override
@@ -105,12 +123,20 @@ public class MainActivity extends AppCompatActivity{
         image.setImageBitmap(k);
     }
 
+    /*
+    * function to save image in external storage of phone
+    * */
+
     public void save(){
         File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String pictureName = getPictureName();
         File imageFile = new File(pictureDirectory,pictureName);
         Uri imageUri = Uri.fromFile(imageFile);
     }
+
+    /*
+    * function to add watermark to the image
+    * */
 
     public static Bitmap mark(Bitmap src, String watermark, Point location, int color, int alpha, int size, boolean underline) {
         int w = src.getWidth();
