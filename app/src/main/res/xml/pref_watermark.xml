@@ -2,15 +2,27 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
+        android:defaultValue="@string/c3"
         android:title="Color Of Watermark"
         android:key="@string/color_pref_key"
         android:entryValues="@array/color_option_label"
-        android:entries="@array/color_option_label"
-        android:defaultValue="@string/c1" />
+        android:entries="@array/color_option_label" />
 
     <EditTextPreference
+        android:summary="Size should be an integer"
         android:defaultValue="@string/default_value_of_size"
         android:key="@string/edit_text_preference_title"
         android:title="@string/edit_text_preference_title" />
+
+    <EditTextPreference
+        android:defaultValue="@string/default_value_of_watermark"
+        android:key="@string/pref_watermark_key"
+        android:title="@string/pref_watermark_title" />
+
+    <CheckBoxPreference
+        android:title="@string/underline_checkbox_title"
+        android:key="@string/underline_checkbox_key"
+        android:defaultValue="true"
+        android:summaryOn="Underlined" />
 
 </PreferenceScreen>

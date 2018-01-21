@@ -9,11 +9,11 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="365dp"
-        android:layout_height="375dp"
-        android:padding="8dp"
+        android:layout_width="362dp"
+        android:layout_height="382dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/content_description_of_ImageView"
+        android:padding="8dp"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <LinearLayout

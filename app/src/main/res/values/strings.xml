@@ -6,17 +6,23 @@
     <string name="setting_menu_title">Settings</string>
     <string name="content_description_of_ImageView">Captured Photograph</string>
     <string name="color_pref_key">Color</string>
-    <string name="c1" translatable="false">Color 1</string>
-    <string name="c2" translatable="false">Color 2</string>
-    <string name="c3" translatable="false">Color 3</string>
-    <string name="c4" translatable="false">Color 4</string>
-    <string name="c5" translatable="false">Color 5</string>
-    <string name="c6" translatable="false">Color 6</string>
-    <string name="c7" translatable="false">Color 7</string>
-    <string name="c8" translatable="false">Color 8</string>
-    <string name="c9" translatable="false">Color 9</string>
-    <string name="c10" translatable="false">Color 10</string>
+    <string name="c1" translatable="false">Indigo</string>
+    <string name="c2" translatable="false">Dark Blue</string>
+    <string name="c3" translatable="false">Dark pink</string>
+    <string name="c4" translatable="false">Gray</string>
+    <string name="c5" translatable="false">Red</string>
+    <string name="c6" translatable="false">Flesh Tint</string>
+    <string name="c7" translatable="false">Light Green</string>
+    <string name="c8" translatable="false">Light Blue</string>
+    <string name="c9" translatable="false">Black</string>
+    <string name="c10" translatable="false">Purple</string>
     <string name="edit_text_preference_title">Watermark Size</string>
     <string name="default_value_of_size">15</string>
+    <string name="default_value_of_watermark">www.collegespace.com</string>
     <string name="reset_image_button_text">RESET IMAGE</string>
+    <string name="pref_watermark_key">watermark_title</string>
+    <string name="pref_watermark_title">Watermark String</string>
+    <string name="underline_checkbox_title">Underline</string>
+    <string name="underline_checkbox_key">underline_checkbox_key</string>
+    <string name="error_toast_message">Image Not Captured</string>
 </resources>
