@@ -25,4 +25,8 @@
     <string name="underline_checkbox_title">Underline</string>
     <string name="underline_checkbox_key">underline_checkbox_key</string>
     <string name="error_toast_message">Image Not Captured</string>
+    <string name="alpha_pref_title">Transparency</string>
+    <string name="alpha_pref_key">alpha_pref_key</string>
+    <string name="alpha_pref_default_value">23</string>
+    <string name="alpha_pref_summary">An integer between 1-255</string>
 </resources>

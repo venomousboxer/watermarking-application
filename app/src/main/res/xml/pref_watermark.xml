@@ -25,4 +25,10 @@
         android:defaultValue="true"
         android:summaryOn="Underlined" />
 
+    <EditTextPreference
+        android:title="@string/alpha_pref_title"
+        android:key="@string/alpha_pref_key"
+        android:defaultValue="@string/alpha_pref_default_value"
+        android:summary="@string/alpha_pref_summary" />
+
 </PreferenceScreen>

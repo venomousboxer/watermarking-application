@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.default_value_of_watermark));
         final boolean underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
                 true);
+        final int setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
+                getResources().getString(R.string.alpha_pref_default_value)));
 
 
         /*
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (checkImageCaptured){
                     Point p = new Point(10,20);
-                    k = mark(k , watermarkingString , p , setColorFromPreferences(value) , 23 , size , underlinePreference);
+                    k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
                     image.setImageBitmap(k);
                 }
                 else {
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK && uploadButtonClicked) {
             Uri selectedImage = data.getData();
-            Bitmap bitmap = null;
+            Bitmap bitmap;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 image.setImageBitmap(bitmap);
@@ -219,10 +221,11 @@ public class MainActivity extends AppCompatActivity {
 
         Canvas canvas = new Canvas(result);
         canvas.drawBitmap(src, 0, 0, null);
-
+        Paint.Align align = Paint.Align.CENTER;
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setAlpha(alpha);
+        paint.setTextAlign(align);
         paint.setTextSize(size);
         paint.setAntiAlias(true);
         paint.setUnderlineText(underline);
