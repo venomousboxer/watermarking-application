@@ -1,5 +1,6 @@
 # watermarking-application
-##clicks and watermarks images
+
+## clicks and watermarks images
 
 ### Min API level 15 : Android 4.0.3 (IceCreamSandwitch)
 
