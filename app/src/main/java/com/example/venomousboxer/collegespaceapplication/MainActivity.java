@@ -30,7 +30,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int GET_FROM_GALLERY = 3;
     Button captureImage;
     Button markingButton;
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap k,capturedImageBitmap;
     final String TAG = "CollegeSpaceApplication";
     static boolean uploadButtonClicked = false;
+    static boolean checkImageUploaded = false;
     static boolean checkImageCaptured = false;
 
     @Override
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         final String value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
                 getResources().getString(R.string.c1));
         final int size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         final String watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
                 getResources().getString(R.string.default_value_of_watermark));
         final boolean underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
-                true);
+                getResources().getBoolean(R.bool.pref_underline_default_value));
         final int setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
                 getResources().getString(R.string.alpha_pref_default_value)));
 
@@ -85,11 +87,17 @@ public class MainActivity extends AppCompatActivity {
         /*
         *  marking button watermarks the captured image
         * */
+
         markingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkImageCaptured){
-                    Point p = new Point(10,20);
+                Log.d(TAG,"value of color : " + value);
+                Log.d(TAG,"value of size : " + Integer.toString(size));
+                Log.d(TAG,"WaterMarking string is : "  + watermarkingString);
+                Log.d(TAG,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
+                Log.d(TAG,"value of Alpha : " + Integer.toString(setAlphaValue));
+                if (checkImageCaptured || checkImageUploaded){
+                    Point p = new Point(12,18);
                     k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
                     image.setImageBitmap(k);
                 }
@@ -101,12 +109,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*
-        *  reset button resets image to original photo captured by camera
+        *  reset button resets the image to original photo captured by camera
         * */
+
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkImageCaptured && capturedImageBitmap != null){
+                if ((checkImageCaptured || checkImageUploaded ) && capturedImageBitmap != null){
                     image.setImageBitmap(capturedImageBitmap);
                 }
                 else{
@@ -118,23 +127,76 @@ public class MainActivity extends AppCompatActivity {
         /*
         *  upload button uploads image in app from gallery
         * */
+
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 uploadButtonClicked = true;
+                checkImageUploaded = true;
                 startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
                         GET_FROM_GALLERY);
             }
         });
     }
 
+
+    /*
+    *   function of interface OnSharedPreferenceChangeListener we implement it to change the value of preferences dynamically
+    * */
+
+//    @Override
+//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//        if (key.equals(getResources().getString(R.string.color_pref_key))) {
+//            value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
+//                    getResources().getString(R.string.c1));
+//            Log.d(TAG,"value of color : " + value);
+//        }
+//        else if (key.equals(getResources().getString(R.string.edit_text_preference_title))) {
+//            size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
+//                    getResources().getString(R.string.default_value_of_size)));
+//            Log.d(TAG,"value of size : " + Integer.toString(size));
+//        }
+//        else if (key.equals(getResources().getString(R.string.pref_watermark_key))) {
+//            watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
+//                    getResources().getString(R.string.default_value_of_watermark));
+//            Log.d(TAG,"WaterMarking string is : "  + watermarkingString);
+//        }
+//        else if (key.equals(getResources().getString(R.string.underline_checkbox_key))) {
+//            underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
+//                    getResources().getBoolean(R.bool.pref_underline_default_value));
+//            Log.d(TAG,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
+//        }
+//        else if (key.equals(getResources().getString(R.string.alpha_pref_key))) {
+//            setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
+//                    getResources().getString(R.string.alpha_pref_default_value)));
+//            Log.d(TAG,"value of Alpha : " + Integer.toString(setAlphaValue));
+//        }
+//
+//        // on change of preferences image reseted to original one
+//
+//        if ((checkImageCaptured || checkImageUploaded) && capturedImageBitmap != null){
+//            image.setImageBitmap(capturedImageBitmap);
+//        }
+//        else{
+//            Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
+//        }
+//
+//        // work of marking button done once on change of preferences
+//
+//
+//        if (checkImageCaptured || checkImageUploaded){
+//            Point p = new Point(12,18);
+//            k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
+//            image.setImageBitmap(k);
+//        }
+//        else {
+//            Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
+
     /*
     *  function to set color of watermark through value chosen in list preference
-    *
-    *  we don't need to implement OnSharedPreferenceChangeListener to change preferences
-    *  because we are adding watermark when user presses the watermarking button add every time
-    *  on pressing the button we read from changed preferences
-    *
     * */
 
     public int setColorFromPreferences(String value) {
@@ -176,9 +238,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data.getExtras().get("data") != null && !uploadButtonClicked) {
-            k = (Bitmap)data.getExtras().get("data");
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && !uploadButtonClicked) {
+            k = (Bitmap) data.getExtras().get("data");
             capturedImageBitmap = k;
             image.setImageBitmap(k);
         }
@@ -196,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
                 e.printStackTrace();
             }
+            uploadButtonClicked = false;
         }
     }
 
@@ -221,15 +283,15 @@ public class MainActivity extends AppCompatActivity {
 
         Canvas canvas = new Canvas(result);
         canvas.drawBitmap(src, 0, 0, null);
-        Paint.Align align = Paint.Align.CENTER;
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setAlpha(alpha);
-        paint.setTextAlign(align);
         paint.setTextSize(size);
         paint.setAntiAlias(true);
         paint.setUnderlineText(underline);
+        canvas.rotate(45f, 0, 0);
         canvas.drawText(watermark, location.x, location.y, paint);
+        canvas.restore();
 
         return result;
     }
