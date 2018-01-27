@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int GET_FROM_GALLERY = 3;
