@@ -146,6 +146,21 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
+                getResources().getString(R.string.c1));
+        size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
+                getResources().getString(R.string.default_value_of_size)));
+        watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
+                getResources().getString(R.string.default_value_of_watermark));
+        underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
+                getResources().getBoolean(R.bool.pref_underline_default_value));
+        setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
+                getResources().getString(R.string.alpha_pref_default_value)));
+    }
 
     /*
     *   function of interface OnSharedPreferenceChangeListener we implement it to change the value of preferences dynamically
