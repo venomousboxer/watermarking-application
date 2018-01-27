@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity{
     static boolean uploadButtonClicked = false;
     static boolean checkImageUploaded = false;
     static boolean checkImageCaptured = false;
+    String value;
+    int size;
+    String watermarkingString;
+    boolean underlinePreference;
+    int setAlphaValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +77,15 @@ public class MainActivity extends AppCompatActivity{
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
+        value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
                 getResources().getString(R.string.c1));
-        final int size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
+        size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
                 getResources().getString(R.string.default_value_of_size)));
-        final String watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
+        watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
                 getResources().getString(R.string.default_value_of_watermark));
-        final boolean underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
+        underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
                 getResources().getBoolean(R.bool.pref_underline_default_value));
-        final int setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
+        setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
                 getResources().getString(R.string.alpha_pref_default_value)));
 
 
@@ -99,7 +104,9 @@ public class MainActivity extends AppCompatActivity{
                 if (checkImageCaptured || checkImageUploaded){
                     Point p = new Point(12,18);
                     k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
+                    Log.d(TAG,"Marking function called");
                     image.setImageBitmap(k);
+                    Log.d(TAG,"image set");
                 }
                 else {
                     Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
@@ -144,56 +151,58 @@ public class MainActivity extends AppCompatActivity{
     *   function of interface OnSharedPreferenceChangeListener we implement it to change the value of preferences dynamically
     * */
 
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if (key.equals(getResources().getString(R.string.color_pref_key))) {
-//            value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
-//                    getResources().getString(R.string.c1));
-//            Log.d(TAG,"value of color : " + value);
-//        }
-//        else if (key.equals(getResources().getString(R.string.edit_text_preference_title))) {
-//            size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
-//                    getResources().getString(R.string.default_value_of_size)));
-//            Log.d(TAG,"value of size : " + Integer.toString(size));
-//        }
-//        else if (key.equals(getResources().getString(R.string.pref_watermark_key))) {
-//            watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
-//                    getResources().getString(R.string.default_value_of_watermark));
-//            Log.d(TAG,"WaterMarking string is : "  + watermarkingString);
-//        }
-//        else if (key.equals(getResources().getString(R.string.underline_checkbox_key))) {
-//            underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
-//                    getResources().getBoolean(R.bool.pref_underline_default_value));
-//            Log.d(TAG,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
-//        }
-//        else if (key.equals(getResources().getString(R.string.alpha_pref_key))) {
-//            setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
-//                    getResources().getString(R.string.alpha_pref_default_value)));
-//            Log.d(TAG,"value of Alpha : " + Integer.toString(setAlphaValue));
-//        }
-//
-//        // on change of preferences image reseted to original one
-//
-//        if ((checkImageCaptured || checkImageUploaded) && capturedImageBitmap != null){
-//            image.setImageBitmap(capturedImageBitmap);
-//        }
-//        else{
-//            Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-//        }
-//
-//        // work of marking button done once on change of preferences
-//
-//
-//        if (checkImageCaptured || checkImageUploaded){
-//            Point p = new Point(12,18);
-//            k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
-//            image.setImageBitmap(k);
-//        }
-//        else {
-//            Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
+    /*
+    *@Override
+    *public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    *    if (key.equals(getResources().getString(R.string.color_pref_key))) {
+    *        value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
+    *                getResources().getString(R.string.c1));
+    *        Log.d(TAG,"value of color : " + value);
+    *    }
+    *    else if (key.equals(getResources().getString(R.string.edit_text_preference_title))) {
+    *        size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
+    *                getResources().getString(R.string.default_value_of_size)));
+    *        Log.d(TAG,"value of size : " + Integer.toString(size));
+    *    }
+    *    else if (key.equals(getResources().getString(R.string.pref_watermark_key))) {
+    *        watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
+    *                getResources().getString(R.string.default_value_of_watermark));
+    *        Log.d(TAG,"WaterMarking string is : "  + watermarkingString);
+    *    }
+    *    else if (key.equals(getResources().getString(R.string.underline_checkbox_key))) {
+    *        underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
+    *                getResources().getBoolean(R.bool.pref_underline_default_value));
+    *        Log.d(TAG,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
+    *    }
+    *    else if (key.equals(getResources().getString(R.string.alpha_pref_key))) {
+    *        setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
+    *                getResources().getString(R.string.alpha_pref_default_value)));
+    *        Log.d(TAG,"value of Alpha : " + Integer.toString(setAlphaValue));
+    *    }
+    *
+    *    // on change of preferences image reseted to original one
+    *
+    *    if ((checkImageCaptured || checkImageUploaded) && capturedImageBitmap != null){
+    *        image.setImageBitmap(capturedImageBitmap);
+    *    }
+    *    else{
+    *        Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
+    *    }
+    *
+    *    // work of marking button done once on change of preferences
+    *
+    *
+    *    if (checkImageCaptured || checkImageUploaded){
+    *        Point p = new Point(12,18);
+    *        k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
+    *        image.setImageBitmap(k);
+    *    }
+    *    else {
+    *        Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
+    *    }
+    *
+    *}
+    **/
 
     /*
     *  function to set color of watermark through value chosen in list preference
@@ -249,6 +258,7 @@ public class MainActivity extends AppCompatActivity{
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 image.setImageBitmap(bitmap);
+                k = bitmap;
                 capturedImageBitmap = bitmap;
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Selecting picture cancelled");
@@ -291,7 +301,6 @@ public class MainActivity extends AppCompatActivity{
         paint.setUnderlineText(underline);
         canvas.rotate(45f, 0, 0);
         canvas.drawText(watermark, location.x, location.y, paint);
-        canvas.restore();
 
         return result;
     }
