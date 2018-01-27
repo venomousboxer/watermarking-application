@@ -16,4 +16,4 @@ set watermarking text, change attributes like :
 Of the watermark our also present in this app.
 
 Any issues, flaws or corrections would be heartilly accepted and implemented.
-Please feel free to post issues and pull requests.
+Please feel free to post issues or pull requests.
