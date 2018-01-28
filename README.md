@@ -6,12 +6,16 @@
 
 This is an android application that **clicks and watermarks** an image.
 User can click or uploadan image and watermark it. Functionality like reset image to orignal, 
-set watermarking text, change attributes like :
+set watermarking text, save editted image, change attributes like :
+
 * color
 * transparency
 * size
 * text
 * underline
+* rotation angle
+* X coordinate
+* Y coordinate
 
 Of the watermark our also present in this app.
 
