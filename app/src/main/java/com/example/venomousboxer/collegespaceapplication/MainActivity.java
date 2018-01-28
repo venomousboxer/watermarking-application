@@ -31,19 +31,32 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity{
 
+    // Constants for Capture image and Upload image intent
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int GET_FROM_GALLERY = 3;
+
+    // Buttons used in MainActivity
     Button captureImage;
     Button markingButton;
     Button resetButton;
     Button uploadButton;
     Button saveImageButton;
+
+    // ImageView in MainActivity
     ImageView image;
+
+    // Bitmap variables for storing edited and non edited image respectively
     Bitmap k,capturedImageBitmap;
+
+    // TAG for log messages in code
     final String TAG = "CollegeSpaceApplication";
+
+    // Booleans for checking various actions
     static boolean uploadButtonClicked = false;
     static boolean checkImageUploaded = false;
     static boolean checkImageCaptured = false;
+
+    // Preference variables
     String value;
     int size;
     String watermarkingString;
@@ -51,12 +64,16 @@ public class MainActivity extends AppCompatActivity{
     int setAlphaValue;
     float rotationAngleValue;
     int xCoordinate = 0, yCoordinate = 0;
+
+    // String for saving path of image file in which image is saved
     String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Views initialised
         captureImage = findViewById(R.id.capture_image_button);
         markingButton = findViewById(R.id.watermarking_button);
         uploadButton = findViewById(R.id.upload_image_button);
@@ -145,6 +162,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+
         /*
         *  Upload button uploads image in app from gallery
         * */
@@ -158,6 +176,7 @@ public class MainActivity extends AppCompatActivity{
                         GET_FROM_GALLERY);
             }
         });
+
 
         /*
         *  Save image button saves the watermarked image to gallery
@@ -177,6 +196,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+
 
     /*
     *  When we return from settings activity to our main activity
@@ -210,6 +230,11 @@ public class MainActivity extends AppCompatActivity{
                 getResources().getString(R.string.y_coordinate_pref_default_value)));
     }
 
+
+    /*
+    *  onActivityResult is called when capture image intent or upload image intent is dispatched
+    *  */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && !uploadButtonClicked) {
@@ -241,6 +266,11 @@ public class MainActivity extends AppCompatActivity{
             uploadButtonClicked = false;
         }
     }
+
+
+    /*
+    *  Function to create an image File to save edited image
+    *  */
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -290,6 +320,11 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+
+    /*
+    *  Function to dispatch intent to capture image through camera application
+    *  */
+
     private void dispatchTakePictureIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -309,6 +344,7 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+
 
     /*
     *  Function to add watermark to the image
@@ -333,6 +369,7 @@ public class MainActivity extends AppCompatActivity{
 
         return result;
     }
+
 
     /*
     *  Menu options are used to go to settings activity
