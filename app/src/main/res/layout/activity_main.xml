@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -10,71 +10,97 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:layout_gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/capture_image_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:text="@string/camera_button_text"
-            android:textColor="@color/colorPrimaryDark" />
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_gravity="center_horizontal">
 
-        <Button
-            android:id="@+id/watermarking_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            <Button
+                android:id="@+id/capture_image_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="@string/camera_button_text"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <Button
+                android:id="@+id/watermarking_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="@string/watermark_button_text"
+                android:textColor="@color/colorPrimaryDark" />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="379dp"
+            android:layout_height="399dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/content_description_of_ImageView"
             android:padding="8dp"
-            android:text="@string/watermark_button_text"
-            android:textColor="@color/colorPrimaryDark" />
+            app:srcCompat="@android:drawable/ic_menu_camera" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp">
+
+            <Button
+                android:id="@+id/upload_image_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="@string/upload_button_text"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <Button
+                android:id="@+id/reset_image_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:padding="8dp"
+                android:text="@string/reset_image_button_text"
+                android:textColor="@color/colorPrimaryDark" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="?android:attr/buttonBarButtonStyle"
+                android:id="@+id/save_image_button"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:padding="8dp"
+                android:text="@string/save_image_button_text"
+                android:textColor="@color/colorPrimaryDark" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="379dp"
-        android:layout_height="399dp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/content_description_of_ImageView"
-        android:padding="8dp"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp">
-
-        <Button
-            android:id="@+id/upload_image_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:text="@string/upload_button_text"
-            android:textColor="@color/colorPrimaryDark" />
-
-        <Button
-            android:id="@+id/reset_image_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:baselineAligned="false"
-            android:padding="8dp"
-            android:text="@string/reset_image_button_text"
-            android:textColor="@color/colorPrimaryDark" />
-    </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

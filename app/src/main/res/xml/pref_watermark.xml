@@ -31,4 +31,22 @@
         android:defaultValue="@string/alpha_pref_default_value"
         android:summary="@string/alpha_pref_summary" />
 
+    <EditTextPreference
+        android:title="@string/angle_pref_title"
+        android:key="@string/angle_pref_key"
+        android:defaultValue="@string/angle_pref_default_value"
+        android:summary="@string/angle_pref_summary" />
+
+    <EditTextPreference
+        android:title="@string/x_coordinate_pref_title"
+        android:key="@string/x_coordinate_pref_key"
+        android:defaultValue="@string/x_coordinate_pref_default_value"
+        android:summary="@string/x_coordinate_pref_summary" />
+
+    <EditTextPreference
+        android:title="@string/y_coordinate_pref_title"
+        android:key="@string/y_coordinate_pref_key"
+        android:defaultValue="@string/y_coordinate_pref_default_value"
+        android:summary="@string/y_coordinate_pref_summary" />
+
 </PreferenceScreen>
