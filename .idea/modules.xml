@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/collegeSpaceApplication.iml" filepath="$PROJECT_DIR$/collegeSpaceApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/watermarking-application.iml" filepath="$PROJECT_DIR$/watermarking-application.iml" />
     </modules>

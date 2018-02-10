@@ -24,28 +24,30 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/material_light"
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:text="@string/camera_button_text"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/dark_text_color" />
 
             <Button
                 android:id="@+id/watermarking_button"
                 style="?android:attr/buttonBarButtonStyle"
+                android:background="@color/material_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:text="@string/watermark_button_text"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/dark_text_color" />
 
         </LinearLayout>
 
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="379dp"
-            android:layout_height="399dp"
+            android:layout_width="383dp"
+            android:layout_height="500dp"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/content_description_of_ImageView"
             android:padding="8dp"
@@ -62,23 +64,25 @@
             <Button
                 android:id="@+id/upload_image_button"
                 style="?android:attr/buttonBarButtonStyle"
+                android:background="@color/material_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:text="@string/upload_button_text"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/dark_text_color" />
 
             <Button
                 android:id="@+id/reset_image_button"
                 style="?android:attr/buttonBarButtonStyle"
+                android:background="@color/material_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:baselineAligned="false"
                 android:padding="8dp"
                 android:text="@string/reset_image_button_text"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/dark_text_color" />
         </LinearLayout>
 
         <LinearLayout
@@ -92,12 +96,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonBarButtonStyle"
+                android:background="@color/material_light"
                 android:id="@+id/save_image_button"
                 android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:padding="8dp"
                 android:text="@string/save_image_button_text"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/dark_text_color" />
 
         </LinearLayout>
 

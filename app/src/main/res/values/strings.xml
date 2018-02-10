@@ -17,7 +17,7 @@
     <string name="c9" translatable="false">Black</string>
     <string name="c10" translatable="false">Purple</string>
     <string name="edit_text_preference_title">Watermark Size</string>
-    <string name="default_value_of_size">15</string>
+    <string name="default_value_of_size">150</string>
     <string name="default_value_of_watermark">www.collegespace.com</string>
     <string name="reset_image_button_text">RESET IMAGE</string>
     <string name="pref_watermark_key">watermark_title</string>

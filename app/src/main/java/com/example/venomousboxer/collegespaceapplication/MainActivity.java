@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -82,19 +81,6 @@ public class MainActivity extends AppCompatActivity{
         image = findViewById(R.id.imageView);
 
 
-        /*
-        *  Capture image button call camera app of phone to capture image
-        * */
-
-        captureImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkImageCaptured = true;
-                dispatchTakePictureIntent();
-            }
-        });
-
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
@@ -119,20 +105,28 @@ public class MainActivity extends AppCompatActivity{
 
 
         /*
+        *  Capture image button call camera app of phone to capture image
+        * */
+
+        captureImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkImageCaptured = true;
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(getPackageManager()) != null){
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
+
+
+        /*
         *  Marking button watermarks the captured image
         * */
 
         markingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG ,"value of color : " + value);
-                Log.d(TAG ,"value of size : " + Integer.toString(size));
-                Log.d(TAG ,"WaterMarking string is : "  + watermarkingString);
-                Log.d(TAG ,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
-                Log.d(TAG ,"value of Alpha : " + Integer.toString(setAlphaValue));
-                Log.d(TAG ,"value of Angle : " + Float.toString(rotationAngleValue));
-                Log.d(TAG ,"value X coordinate is : " + Integer.toString(xCoordinate));
-                Log.d(TAG ,"value of Y coordinate is : " + Integer.toString(yCoordinate));
                 if (checkImageCaptured || checkImageUploaded){
                     Point p = new Point(xCoordinate , yCoordinate);
                     k = mark(k , watermarkingString , p , setColorFromPreferences(value) ,
@@ -154,7 +148,10 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if ((checkImageCaptured || checkImageUploaded ) && capturedImageBitmap != null){
-                    image.setImageBitmap(capturedImageBitmap);
+                    k = capturedImageBitmap;
+                    image.setImageBitmap(k);
+                    k = ((BitmapDrawable)image.getDrawable()).getBitmap();
+                    capturedImageBitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
                 }
                 else{
                     Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
@@ -239,14 +236,22 @@ public class MainActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && !uploadButtonClicked) {
 
-            try {
-                k = (Bitmap) data.getExtras().get("data");
-                capturedImageBitmap = k;
-                image.setImageBitmap(k);
-            }catch (NullPointerException n) {
-                n.printStackTrace();
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                k = (Bitmap) bundle.get("data");
+                if (k != null) {
+                    capturedImageBitmap = k;
+                    image.setImageBitmap(k);
+                }
+                else {
+                    Toast.makeText(this, "There was some error while clicking the photograph",Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "There was some error while clicking the photograph");
+                }
             }
-
+            else {
+                Toast.makeText(this, "There was some error while clicking the photograph",Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "There was some error while clicking the photograph");
+            }
         }
         else if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK && uploadButtonClicked) {
             Uri selectedImage = data.getData();
@@ -258,6 +263,7 @@ public class MainActivity extends AppCompatActivity{
                 capturedImageBitmap = bitmap;
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Selecting picture cancelled");
+                Toast.makeText(this, "Selecting picture cancelled", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } catch (IOException e) {
                 Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
@@ -268,24 +274,58 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
+    private void storeImage(Bitmap bitmap) {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile != null) {
+            mCurrentPhotoPath = pictureFile.getAbsolutePath();
+        }else {
+            Log.d(TAG,
+                    "Error creating media file, check storage permissions: ");
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+            Toast.makeText(this, "Image Saved", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
+    }
+
+
     /*
     *  Function to create an image File to save edited image
     *  */
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = String.valueOf(System.currentTimeMillis());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+    private  File getOutputMediaFile(){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + getApplicationContext().getPackageName()
+                + "/Files/Pictures");
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
+        Log.i("image", "image saved to >>>" + mediaStorageDir.getAbsolutePath());
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String imageFileName = "JPEG_" + timeStamp + "_" + ".jpg";
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+        return mediaFile;
     }
 
 
@@ -294,56 +334,9 @@ public class MainActivity extends AppCompatActivity{
     *  */
 
     private void addPicToGallery(Bitmap bitmap) {
-        File file;
-        try {
-            file = createImageFile();
-            try{
-
-                FileOutputStream fos = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.flush();
-                fos.close();
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                mediaScanIntent.setData(Uri.fromFile(file));
-                this.sendBroadcast(mediaScanIntent);
-                Log.d(TAG ,"Image broadcast completed");
-
-            } catch (FileNotFoundException e) {
-                Log.e(TAG ,"File not found error while saving image");
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.e(TAG ,"IOException while saving image");
-                e.printStackTrace();
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        storeImage(bitmap);
     }
 
-
-    /*
-    *  Function to dispatch intent to capture image through camera application
-    *  */
-
-    private void dispatchTakePictureIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (photoFile != null){
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(intent ,REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
 
 
     /*
@@ -423,76 +416,4 @@ public class MainActivity extends AppCompatActivity{
                 return R.color.colorOption1;
         }
     }
-
-
-    /*
-    *   function of interface OnSharedPreferenceChangeListener we implement it to change the value of preferences dynamically
-    * */
-
-    /*
-    * @Override
-    * public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    *     if (key.equals(getResources().getString(R.string.color_pref_key))) {
-    *         value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
-    *                 getResources().getString(R.string.c1));
-    *         Log.d(TAG,"value of color : " + value);
-    *     }
-    *     else if (key.equals(getResources().getString(R.string.edit_text_preference_title))) {
-    *         size = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.edit_text_preference_title),
-    *                 getResources().getString(R.string.default_value_of_size)));
-    *         Log.d(TAG,"value of size : " + Integer.toString(size));
-    *     }
-    *     else if (key.equals(getResources().getString(R.string.pref_watermark_key))) {
-    *         watermarkingString = sharedPreferences.getString(getResources().getString(R.string.pref_watermark_key),
-    *                 getResources().getString(R.string.default_value_of_watermark));
-    *         Log.d(TAG,"WaterMarking string is : "  + watermarkingString);
-    *     }
-    *     else if (key.equals(getResources().getString(R.string.underline_checkbox_key))) {
-    *         underlinePreference = sharedPreferences.getBoolean(getResources().getString(R.string.underline_checkbox_key),
-    *                 getResources().getBoolean(R.bool.pref_underline_default_value));
-    *         Log.d(TAG,"value of underlinePreferences : " + Boolean.toString(underlinePreference));
-    *     }
-    *     else if (key.equals(getResources().getString(R.string.alpha_pref_key))) {
-    *         setAlphaValue = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.alpha_pref_key),
-    *                 getResources().getString(R.string.alpha_pref_default_value)));
-    *         Log.d(TAG,"value of Alpha : " + Integer.toString(setAlphaValue));
-    *     }
-    *
-    *     // on change of preferences image are reset to original one
-    *
-    *     if ((checkImageCaptured || checkImageUploaded) && capturedImageBitmap != null){
-    *         image.setImageBitmap(capturedImageBitmap);
-    *     }
-    *     else{
-    *         Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-    *     }
-    *
-    *     // work of marking button done once on change of preferences
-    *
-    *
-    *     if (checkImageCaptured || checkImageUploaded){
-    *         Point p = new Point(12,18);
-    *         k = mark(k , watermarkingString , p , setColorFromPreferences(value) , setAlphaValue , size , underlinePreference);
-    *         image.setImageBitmap(k);
-    *     }
-    *     else {
-    *         Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-    *     }
-    *
-    * }
-    * */
-
-
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if (key.equals(getResources().getString(R.string.color_pref_key))) {
-//            String value = sharedPreferences.getString(getResources().getString(R.string.color_pref_key),
-//                    getResources().getString(R.string.c1));
-//            Point p = new Point(10,20);
-//            k = mark(k , WATERMARK , p , setColorFromPreferences(value) , 23 , 20 , true);
-//            image.setImageBitmap(k);
-//        }
-//    }
-
-
 }
