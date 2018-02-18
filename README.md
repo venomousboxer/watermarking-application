@@ -17,7 +17,7 @@ set watermarking text, save edited image, change attributes like :
 * X coordinate
 * Y coordinate
 
-Of the watermark our also present in this app.
+of the watermark are also present in this app.
 
-Any issues, flaws or corrections would be heartilly accepted and implemented.
+Any issues, flaws or corrections would be heartily accepted and implemented.
 Please feel free to post issues or pull requests.
