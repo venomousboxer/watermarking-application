@@ -17,5 +17,10 @@ set watermarking text, save edited image, change attributes like :
 
 of the watermark are also present in this app.
 
+Libraries Used :
+
+* [Picasso](http://square.github.io/picasso/)  To load Image in ImageView
+* [TedPicker](https://github.com/ParkSangGwon/TedPicker)   To upload multiple Images
+
 Any issues, flaws or corrections would be heartily accepted and implemented.
 Please feel free to post issues or pull requests.
