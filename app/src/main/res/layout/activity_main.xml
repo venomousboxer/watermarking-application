@@ -43,15 +43,11 @@
 
         </LinearLayout>
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="383dp"
-            android:layout_height="500dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/content_description_of_ImageView"
-            android:padding="8dp"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+        <android.support.v7.widget.RecyclerView
+            android:contentDescription="@string/content_description_of_recyclerView"
+            android:id="@+id/all_images_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
         <LinearLayout

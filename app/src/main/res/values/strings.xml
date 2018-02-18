@@ -4,7 +4,7 @@
     <string name="watermark_button_text">Add Watermark</string>
     <string name="upload_button_text">Upload Image</string>
     <string name="setting_menu_title">Settings</string>
-    <string name="content_description_of_ImageView">Captured Photograph</string>
+    <string name="content_description_of_recyclerView">Captured Photographs</string>
     <string name="color_pref_key">Color</string>
     <string name="c1" translatable="false">Indigo</string>
     <string name="c2" translatable="false">Dark Blue</string>
@@ -42,4 +42,9 @@
     <string name="y_coordinate_pref_default_value">18</string>
     <string name="y_coordinate_pref_summary">Should be integer</string>
     <string name="save_image_button_text">SAVE IMAGE</string>
+    <string name="toast_images_added">Images added</string>
+    <string name="toast_permissions_given">PERMISSIONS GIVEN!</string>
+    <string name="toast_insufficient_permissions">INSUFFICIENT PERMISSIONS!</string>
+    <string name="toast_error_getCropped">Error on getting cropped images</string>
+    <string name="toast_image_cropped">Images cropped</string>
 </resources>

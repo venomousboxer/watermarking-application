@@ -1,59 +1,51 @@
 package com.example.venomousboxer.collegespaceapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.gun0912.tedpicker.ImagePickerActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
     // Constants for Capture image and Upload image intent
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
-    public static final int GET_FROM_GALLERY = 3;
+    private static final int INTENT_REQUEST_GET_IMAGES = 13;
+    static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE_RESULT = 1;
 
     // Buttons used in MainActivity
     Button captureImage;
     Button markingButton;
-    Button resetButton;
     Button uploadButton;
     Button saveImageButton;
 
-    // ImageView in MainActivity
-    ImageView image;
-
-    // Bitmap variables for storing edited and non edited image respectively
-    Bitmap k,capturedImageBitmap;
-
     // TAG for log messages in code
     final String TAG = "CollegeSpaceApplication";
-
-    // Booleans for checking various actions
-    static boolean uploadButtonClicked = false;
-    static boolean checkImageUploaded = false;
-    static boolean checkImageCaptured = false;
 
     // Preference variables
     String value;
@@ -63,6 +55,10 @@ public class MainActivity extends AppCompatActivity{
     int setAlphaValue;
     float rotationAngleValue;
     int xCoordinate = 0, yCoordinate = 0;
+    ImageViewAdapter mAdapter;
+
+    ArrayList<String> tempUris;
+    ArrayList<String> finalUris;
 
     // String for saving path of image file in which image is saved
     String mCurrentPhotoPath;
@@ -72,13 +68,19 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RecyclerView imageViewRecyclerView;
+
+        // Uris of images saved before watermarking
+        tempUris = new ArrayList<>();
+        // Uris of images saved after watermarking
+        finalUris = new ArrayList<>();
+
         // Views initialised
+        imageViewRecyclerView = findViewById(R.id.all_images_recycler_view);
         captureImage = findViewById(R.id.capture_image_button);
         markingButton = findViewById(R.id.watermarking_button);
         uploadButton = findViewById(R.id.upload_image_button);
-        resetButton = findViewById(R.id.reset_image_button);
         saveImageButton = findViewById(R.id.save_image_button);
-        image = findViewById(R.id.imageView);
 
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -103,6 +105,11 @@ public class MainActivity extends AppCompatActivity{
         yCoordinate = Integer.parseInt(sharedPreferences.getString(getResources().getString(R.string.y_coordinate_pref_key),
                 getResources().getString(R.string.y_coordinate_pref_default_value)));
 
+        imageViewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ImageViewAdapter(MainActivity.this, tempUris, watermarkingString,
+                setColorFromPreferences(value), setAlphaValue, size, underlinePreference, rotationAngleValue, true);
+        imageViewRecyclerView.setAdapter(mAdapter);
+
 
         /*
         *  Capture image button call camera app of phone to capture image
@@ -111,13 +118,9 @@ public class MainActivity extends AppCompatActivity{
         captureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkImageCaptured = true;
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null){
-                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                startAddingImages();
                 }
-            }
-        });
+            });
 
 
         /*
@@ -127,35 +130,7 @@ public class MainActivity extends AppCompatActivity{
         markingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkImageCaptured || checkImageUploaded){
-                    Point p = new Point(xCoordinate , yCoordinate);
-                    k = mark(k , watermarkingString , p , setColorFromPreferences(value) ,
-                            setAlphaValue , size , underlinePreference , rotationAngleValue);
-                    image.setImageBitmap(k);
-                }
-                else {
-                    Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        /*
-        *  Reset button resets the image to original photo captured by camera
-        * */
-
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((checkImageCaptured || checkImageUploaded ) && capturedImageBitmap != null){
-                    k = capturedImageBitmap;
-                    image.setImageBitmap(k);
-                    k = ((BitmapDrawable)image.getDrawable()).getBitmap();
-                    capturedImageBitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
-                }
-                else{
-                    Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-                }
+                //
             }
         });
 
@@ -167,10 +142,7 @@ public class MainActivity extends AppCompatActivity{
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadButtonClicked = true;
-                checkImageUploaded = true;
-                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
-                        GET_FROM_GALLERY);
+                startAddingImages();
             }
         });
 
@@ -182,14 +154,7 @@ public class MainActivity extends AppCompatActivity{
         saveImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkImageUploaded || checkImageCaptured) {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) image.getDrawable();
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                    addPicToGallery(bitmap);
-                }
-                else {
-                    Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
-                }
+                //
             }
         });
     }
@@ -227,6 +192,41 @@ public class MainActivity extends AppCompatActivity{
                 getResources().getString(R.string.y_coordinate_pref_default_value)));
     }
 
+    // Adding Images to PDF
+    void startAddingImages() {
+        // Check if permissions are granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA},
+                        PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE_RESULT);
+            } else {
+                selectImages();
+            }
+        } else {
+            selectImages();
+        }
+    }
+
+    /**
+     * Opens ImagePickerActivity to select Images
+     */
+    public void selectImages() {
+        Intent intent = new Intent(MainActivity.this, ImagePickerActivity.class);
+
+        //add to intent the URIs of the already selected images
+        //first they are converted to Uri objects
+        ArrayList<Uri> uris = new ArrayList<>(tempUris.size());
+        for (String stringUri : tempUris) {
+            uris.add(Uri.fromFile(new File(stringUri)));
+        }
+        // add them to the intent
+        intent.putExtra(ImagePickerActivity.EXTRA_IMAGE_URIS, uris);
+
+        startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
+    }
+
 
     /*
     *  onActivityResult is called when capture image intent or upload image intent is dispatched
@@ -234,42 +234,42 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && !uploadButtonClicked) {
 
-            Bundle bundle = data.getExtras();
-            if (bundle != null) {
-                k = (Bitmap) bundle.get("data");
-                if (k != null) {
-                    capturedImageBitmap = k;
-                    image.setImageBitmap(k);
-                }
-                else {
-                    Toast.makeText(this, "There was some error while clicking the photograph",Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "There was some error while clicking the photograph");
-                }
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == INTENT_REQUEST_GET_IMAGES && resultCode == Activity.RESULT_OK) {
+
+            tempUris.clear();
+
+            ArrayList<Uri> imageUris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+            for (int i = 0; i < imageUris.size(); i++) {
+                tempUris.add(imageUris.get(i).getPath());
             }
-            else {
-                Toast.makeText(this, "There was some error while clicking the photograph",Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "There was some error while clicking the photograph");
-            }
+            Toast.makeText(MainActivity.this, R.string.toast_images_added, Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "no. of images : " +
+                    String.valueOf(tempUris.size()), Toast.LENGTH_SHORT).show();
+            mAdapter.swapUri(tempUris);
         }
-        else if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK && uploadButtonClicked) {
-            Uri selectedImage = data.getData();
-            Bitmap bitmap;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                image.setImageBitmap(bitmap);
-                k = bitmap;
-                capturedImageBitmap = bitmap;
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "Selecting picture cancelled");
-                Toast.makeText(this, "Selecting picture cancelled", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
-                e.printStackTrace();
+    }
+
+    /**
+     * Called after user is asked to grant permissions
+     *
+     * @param requestCode  REQUEST Code for opening permissions
+     * @param permissions  permissions asked to user
+     * @param grantResults bool array indicating if permission is granted
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE_RESULT: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    selectImages();
+                    Toast.makeText(MainActivity.this, R.string.toast_permissions_given, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.toast_insufficient_permissions, Toast.LENGTH_SHORT).show();
+                }
             }
-            uploadButtonClicked = false;
         }
     }
 
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity{
         }
         // Create a media file name
         String timeStamp = String.valueOf(System.currentTimeMillis());
-        String imageFileName = "JPEG_" + timeStamp + "_" + ".jpg";
+        String imageFileName = "JPEG_" + timeStamp + "_" + ".PNG";
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
         return mediaFile;
@@ -333,35 +333,36 @@ public class MainActivity extends AppCompatActivity{
     *  This method adds watermarked image to Gallery
     *  */
 
-    private void addPicToGallery(Bitmap bitmap) {
-        storeImage(bitmap);
-    }
+//    private void addPicToGallery() {
+//        if (checkImageUploaded || checkImageCaptured) {
+//            BitmapDrawable bitmapDrawable = (BitmapDrawable) image.getDrawable();
+//            Bitmap bitmap = bitmapDrawable.getBitmap();
+//            storeImage(bitmap);
+//        }
+//        else {
+//            Toast.makeText(MainActivity.this,getText(R.string.error_toast_message),Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
-
-
-    /*
-    *  Function to add watermark to the image
-    * */
-
-    public static Bitmap mark(Bitmap src, String watermark, Point location, int color,
-                              int alpha, int size, boolean underline, float angle) {
-        int w = src.getWidth();
-        int h = src.getHeight();
-        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
-
-        Canvas canvas = new Canvas(result);
-        canvas.drawBitmap(src, 0, 0, null);
-        Paint paint = new Paint();
-        paint.setColor(color);
-        paint.setAlpha(alpha);
-        paint.setTextSize(size);
-        paint.setAntiAlias(true);
-        paint.setUnderlineText(underline);
-        canvas.rotate( angle , 0, 0);
-        canvas.drawText(watermark, location.x, location.y, paint);
-
-        return result;
-    }
+//    public static Bitmap mark(Bitmap src, String watermark, Point location, int color,
+//                              int alpha, int size, boolean underline, float angle) {
+//        int w = src.getWidth();
+//        int h = src.getHeight();
+//        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+//
+//        Canvas canvas = new Canvas(result);
+//        canvas.drawBitmap(src, 0, 0, null);
+//        Paint paint = new Paint();
+//        paint.setColor(color);
+//        paint.setAlpha(alpha);
+//        paint.setTextSize(size);
+//        paint.setAntiAlias(true);
+//        paint.setUnderlineText(underline);
+//        canvas.rotate( angle , 0, 0);
+//        canvas.drawText(watermark, location.x, location.y, paint);
+//
+//        return result;
+//    }
 
 
     /*
