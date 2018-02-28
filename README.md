@@ -2,11 +2,11 @@
 
 ## clicks and watermarks images
 
-### Min API level 15 : Android 4.0.3 (IceCreamSandwitch)
+### Min API level 15 : Android 4.0.3 (IceCreamSandwich)
 
 This is an android application that **clicks, watermarks and saves** images.
-User can click or upload images and watermark them. Functionality like reset image to orignal, 
-set watermarking text, save edited image, change attributes like :
+User can click or upload images and watermark them. Functionalities like resetting the image to original, 
+custom watermarking text, saving edited images and changing attributes like :
 
 * color
 * transparency
